@@ -4,7 +4,7 @@ import operator
 import time
 import collections
 import numpy as np
-import pandas as pd
+import pandas as pd50200
 
 class WifiCollector:
     def __init__(self):
@@ -19,8 +19,10 @@ class WifiCollector:
 
 
     def get_data(self):
-        self.results = str(subprocess.check_output(["netsh", "wlan", "show", "network", "mode=Bssid"]))
-        #print(self.results)
+        #self.results = str(subprocess.check_output(["netsh", "wlan", "show", "network", "mode=Bssid"])) #Windows
+        self.results = str(subprocess.check_output(["nmcli","-f", "BSSID,RATE,SIGNAL", "dev", "wifi"]))
+
+        print(self.results)
 
 
     def wordModifications(self):
@@ -93,7 +95,7 @@ class WifiCollector:
         ordered_networks = collections.OrderedDict(sorted(network_dependability.items()))
         return ordered_networks
 
-    def get_all_networks(self):
+    def get_all_networks(self, num_timeframes, sleep_time):
         network_dependability = {}
         for x in range(num_timeframes):
             zeroappend = []
@@ -144,9 +146,7 @@ class WifiCollector:
 
 if __name__ == '__main__':
     wc = WifiCollector()
-    avg_network = wc.get_multiple_values(10,0.2)
-    print(avg_network)
-
-
-    #for x in range(1):
-
+    #avg_network = wc.get_multiple_values(10,0.2)
+    for x in range(5):
+        wc.get_data()
+        time.sleep(1)
